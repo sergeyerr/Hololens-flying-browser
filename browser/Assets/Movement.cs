@@ -25,19 +25,17 @@ public class Movement : MonoBehaviour {
         if (move)
         {
             Quaternion fullRotation = CameraTrans.rotation * Quaternion.Inverse(bRotation);
-            float scalingFactor = (speed + angleCamToB * angleCamToB / 100)  / angleCamToB * Time.smoothDeltaTime;
+            float scalingFactor = (speed / angleCamToB + angleCamToB / 50)  * Time.smoothDeltaTime;
             Quaternion scaledRotation = Quaternion.Slerp(Quaternion.identity, fullRotation, scalingFactor);
             Vector3 newbrowserToCamera = scaledRotation * browserToCamera;
-            transform.position = CameraTrans.position + newbrowserToCamera.normalized*idealLen;
+            transform.position = CameraTrans.position + newbrowserToCamera.normalized * idealLen; // чтобы не было частых подёргиваний 
             offset = newbrowserToCamera;
-            transform.rotation = Quaternion.LookRotation(-newbrowserToCamera) * Quaternion.Euler(90, 0, 0) * Quaternion.Euler(0, -180, 0);
-            angleCamToB = Quaternion.Angle(CameraTrans.rotation, bRotation);
+            transform.rotation = Quaternion.LookRotation(-newbrowserToCamera) * Quaternion.Euler(90, 0, 0) * Quaternion.Euler(0, -180, 0); // просто подбором нашёл
             if (angleCamToB < 7)
             {
                 move = false;
-
             }
         }
-        if (angleCamToB > 25) move = true;
+       else if (angleCamToB > 25) move = true;
     }
 }
